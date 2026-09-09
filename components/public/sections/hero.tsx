@@ -1,9 +1,21 @@
 import Image from "next/image";
 import { LinkButton } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import type { PageSectionRow } from "@/lib/types/database";
 
-export function Hero({ section, compact = false }: { section: PageSectionRow; compact?: boolean }) {
+// Only the fields Hero actually renders — a PageSectionRow satisfies this
+// structurally, but callers without a real DB row (e.g. the static Services
+// list page) can also pass a plain literal.
+export interface HeroContent {
+  title: string | null;
+  subtitle: string | null;
+  image_url: string | null;
+  cta_label: string | null;
+  cta_url: string | null;
+  secondary_cta_label: string | null;
+  secondary_cta_url: string | null;
+}
+
+export function Hero({ section, compact = false }: { section: HeroContent; compact?: boolean }) {
   return (
     <section className="relative overflow-hidden bg-navy text-white">
       <div className="pointer-events-none absolute inset-0 opacity-40">

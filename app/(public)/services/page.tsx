@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Section } from "@/components/ui/section";
 import { Reveal } from "@/components/public/reveal";
 import { LinkButton } from "@/components/ui/button";
+import { Hero } from "@/components/public/sections/hero";
 import { DynamicIcon } from "@/lib/icon-registry";
 import { getServices } from "@/lib/data/services";
 import { buildMetadata } from "@/lib/seo";
@@ -20,14 +21,17 @@ export default async function ServicesPage() {
 
   return (
     <>
-      <section className="bg-navy py-24 text-center text-white lg:py-32">
-        <div className="mx-auto max-w-2xl px-6">
-          <h1 className="font-heading text-4xl font-bold sm:text-5xl">Our Core Services</h1>
-          <p className="mt-5 text-lg text-white/75">
-            Structured gold trading, funding, compliance and off-take services built around governance and traceability.
-          </p>
-        </div>
-      </section>
+      <Hero
+        section={{
+          title: "Our Core Services",
+          subtitle: "Structured gold trading, funding, compliance and off-take services built around governance and traceability.",
+          image_url: "/images/hero/services.jpg",
+          cta_label: null,
+          cta_url: null,
+          secondary_cta_label: null,
+          secondary_cta_url: null,
+        }}
+      />
 
       <Section background="light">
         <div className="grid gap-8 lg:grid-cols-2">
