@@ -4,6 +4,10 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import type { PageRow, PageSectionRow } from "@/lib/types/database";
 
 export const getPageWithSections = cache(async (slug: string) => {
+  const admin = createAdminClient();
+  const { error: startInsertError } = await admin.from("_debug_log").insert({ message: `start slug="${slug}"` });
+  if (startInsertError) console.error("[getPageWithSections] start insert failed", startInsertError);
+
   const supabase = await createClient();
   const { data: page, error: pageError } = await supabase
     .from("pages")
@@ -16,11 +20,8 @@ export const getPageWithSections = cache(async (slug: string) => {
   if (!typedPage) {
     const message = `no page for slug="${slug}" pageError=${JSON.stringify(pageError)} url=${process.env.NEXT_PUBLIC_SUPABASE_URL}`;
     console.error(`[getPageWithSections] ${message}`);
-    try {
-      await createAdminClient().from("_debug_log").insert({ message });
-    } catch {
-      // best-effort diagnostic only
-    }
+    const { error: insertError } = await admin.from("_debug_log").insert({ message });
+    if (insertError) console.error("[getPageWithSections] insert failed", insertError);
     return null;
   }
 
