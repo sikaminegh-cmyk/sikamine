@@ -13,7 +13,9 @@ export const getPageWithSections = cache(async (slug: string) => {
 
   const typedPage = page as PageRow | null;
   if (!typedPage) {
-    console.error(`[getPageWithSections] no page for slug="${slug}"`, { pageError });
+    console.error(
+      `[getPageWithSections] no page for slug="${slug}" pageError=${JSON.stringify(pageError)} url=${process.env.NEXT_PUBLIC_SUPABASE_URL}`
+    );
     return null;
   }
 
