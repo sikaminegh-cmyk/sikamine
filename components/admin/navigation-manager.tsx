@@ -8,16 +8,16 @@ import { ConfirmDeleteButton } from "@/components/admin/confirm-button";
 import { createNavItem, deleteNavItem, reorderNavItem, updateNavItem, type NavItemInput } from "@/lib/actions/admin/navigation";
 import type { NavigationItemRow, NavLocation } from "@/lib/types/database";
 
-const emptyForm: NavItemInput = { label: "", url: "", location: "header", is_external: false, visible: true };
+const emptyForm: NavItemInput = { label: "", url: "", location: "header", group_key: null, is_external: false, visible: true };
 
 function NavList({ items, setItems }: { items: NavigationItemRow[]; setItems: (fn: (prev: NavigationItemRow[]) => NavigationItemRow[]) => void }) {
   const [editing, setEditing] = useState<NavigationItemRow | null>(null);
-  const [creating, setCreating] = useState<NavLocation | null>(null);
+  const [creating, setCreating] = useState<string | null>(null);
   const [form, setForm] = useState<NavItemInput>(emptyForm);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const openCreate = (location: NavLocation) => { setForm({ ...emptyForm, location }); setEditing(null); setCreating(location); setError(null); };
+  const openCreate = (key: string, defaults: Partial<NavItemInput>) => { setForm({ ...emptyForm, ...defaults }); setEditing(null); setCreating(key); setError(null); };
   const openEdit = (item: NavigationItemRow) => { setForm(item); setEditing(item); setCreating(null); setError(null); };
   const close = () => { setEditing(null); setCreating(null); };
 
@@ -65,10 +65,10 @@ function NavList({ items, setItems }: { items: NavigationItemRow[]; setItems: (f
     });
   };
 
-  const renderGroup = (location: NavLocation, label: string) => {
-    const groupItems = items.filter((i) => i.location === location).sort((a, b) => a.position - b.position);
+  const renderGroup = (key: string, label: string, filter: (i: NavigationItemRow) => boolean, defaults: Partial<NavItemInput>) => {
+    const groupItems = items.filter(filter).sort((a, b) => a.position - b.position);
     return (
-      <Card className="p-0" key={location}>
+      <Card className="p-0" key={key}>
         <h2 className="border-b border-black/5 px-6 py-4 font-heading text-sm font-bold text-navy">{label}</h2>
         {groupItems.length === 0 ? (
           <div className="p-6"><EmptyState message="No items yet." /></div>
@@ -93,7 +93,7 @@ function NavList({ items, setItems }: { items: NavigationItemRow[]; setItems: (f
           </ul>
         )}
         <div className="border-t border-black/5 p-4">
-          <AdminButton onClick={() => openCreate(location)}><Plus size={16} /> Add {label} Item</AdminButton>
+          <AdminButton onClick={() => openCreate(key, defaults)}><Plus size={16} /> Add {label} Item</AdminButton>
         </div>
       </Card>
     );
@@ -104,8 +104,9 @@ function NavList({ items, setItems }: { items: NavigationItemRow[]; setItems: (f
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
       <div className="space-y-6">
-        {renderGroup("header", "Header Navigation")}
-        {renderGroup("footer", "Footer Navigation")}
+        {renderGroup("header", "Header Navigation", (i) => i.location === "header", { location: "header", group_key: null })}
+        {renderGroup("footer", "Footer Navigation", (i) => i.location === "footer" && i.group_key !== "other", { location: "footer", group_key: null })}
+        {renderGroup("footer-other", "Other Links (Footer)", (i) => i.location === "footer" && i.group_key === "other", { location: "footer", group_key: "other" })}
       </div>
 
       {showForm && (
@@ -125,6 +126,16 @@ function NavList({ items, setItems }: { items: NavigationItemRow[]; setItems: (f
                 </select>
               )}
             </Field>
+            {form.location === "footer" && (
+              <Field label="Footer Group">
+                {(id) => (
+                  <select id={id} className={inputClass} value={form.group_key ?? ""} onChange={(e) => setForm((f) => ({ ...f, group_key: e.target.value || null }))}>
+                    <option value="">Footer Navigation</option>
+                    <option value="other">Other Links</option>
+                  </select>
+                )}
+              </Field>
+            )}
             <label className="flex items-center gap-2 text-sm">
               <input type="checkbox" checked={form.is_external} onChange={(e) => setForm((f) => ({ ...f, is_external: e.target.checked }))} />
               Opens in new tab (external link)

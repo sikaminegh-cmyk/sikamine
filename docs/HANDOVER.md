@@ -2,6 +2,21 @@
 
 Sikamine Gold Trading Ltd owns this platform outright. This document lists everything required for Sikamine to independently manage, modify, migrate or transfer the website after project completion, with no dependency on the original development team.
 
+## Runbook — Steps To Complete This Handover
+
+Assumes the domain is already purchased and a Supabase project already exists in Sikamine's name (both owned by Sikamine from the start, per the No-Lock-In Confirmation below). Do these in order:
+
+1. **Push the schema to the production Supabase project.** `docs/DATABASE.md` → Production Setup, steps 1–2 (`supabase link`, `supabase db push`). This creates every table, RLS policy, and storage bucket, plus the baseline seed content.
+2. **Bring over already-configured local content** (branding, hero images, CEO message, team members, office details, services copy, legal documents, etc.) so none of that work has to be redone. `docs/DATABASE.md` → "Migrating Already-Configured Local Content to Production" — includes the data dump/restore commands and, importantly, how to fix uploaded-image URLs (they're stored as relative paths in local dev and need to become absolute production URLs).
+3. **Create the first Super Admin** on the production project: `node scripts/create-admin.mjs <email> <password> "Full Name" super_admin`, pointed at production (`docs/DATABASE.md` → Production Setup, step 4).
+4. **Deploy to Vercel** (or the chosen host) under Sikamine's account. `docs/DEPLOYMENT.md` → § 4, including all environment variables from `.env.example` with production values.
+5. **Point the purchased domain** at the deployment and update DNS (`docs/DEPLOYMENT.md` § 1 and § 4 step 5).
+6. **Re-upload the handful of images** (logo, favicon, CEO photo, team photos, partner logos) through the live production `/admin` if the SQL URL-fix wasn't used in step 2 — see the note in `docs/DATABASE.md`.
+7. **Work through `docs/DEPLOYMENT.md` § 6 Post-Deploy Checklist** (test enquiry form, SEO, maintenance mode off, etc.).
+8. **Transfer the GitHub repository** to Sikamine's GitHub account/organization (GitHub → repo Settings → Transfer ownership on the current owner's side, or Sikamine's account accepts a transfer/invite). Do this only once steps 1–7 are confirmed working — a broken production deploy is much easier to fix while the repo is still reachable from this machine.
+9. **Work through the "Verifying Independent Control" checklist below** with someone at Sikamine actually doing each step (not the developer) — this is the real test that the handover is complete.
+10. **Remove developer access**: once Sikamine confirms independent control, remove the developer as a Supabase project collaborator, Vercel team member, and any GitHub collaborator access retained during setup.
+
 ## What Sikamine Receives
 
 1. **Complete source code** — this repository, including full git history.
@@ -47,6 +62,7 @@ Before considering handover complete, confirm Sikamine (not the developer) can, 
 - [ ] Edit Terms & Conditions and republish (Legal Documents)
 - [ ] Upload a document/image (Media Library)
 - [ ] Replace an image used on the site (Media Library + relevant Page section)
+- [ ] Publish a blog post and a photo album (Blog & Albums)
 - [ ] Add and remove an administrator (Admin Users)
 - [ ] Change SEO title/description for a page (SEO)
 - [ ] View and export enquiries (Contact Messages / Partnership Enquiries)

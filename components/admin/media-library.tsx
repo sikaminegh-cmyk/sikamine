@@ -7,6 +7,7 @@ import { AdminButton, Card, EmptyState, Pill, inputClass } from "@/components/ad
 import { ConfirmDeleteButton } from "@/components/admin/confirm-button";
 import { createClient } from "@/lib/supabase/client";
 import { deleteMedia, recordMediaUpload, updateMedia } from "@/lib/actions/admin/media";
+import { toPortableUrl } from "@/lib/public-url";
 import type { MediaRow } from "@/lib/types/database";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/svg+xml", "image/gif", "video/mp4", "application/pdf"];
@@ -82,7 +83,7 @@ export function MediaLibrary({ initialMedia }: { initialMedia: MediaRow[] }) {
         filename: file.name,
         storage_path: path,
         bucket,
-        public_url: isPublic ? publicUrlData.publicUrl : null,
+        public_url: isPublic ? toPortableUrl(publicUrlData.publicUrl) : null,
         mime_type: file.type,
         size_bytes: file.size,
         alt_text: "",

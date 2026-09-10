@@ -28,6 +28,25 @@ const nextConfig: NextConfig = {
     // applies there and the protection stays fully in effect.
     dangerouslyAllowLocalIP: process.env.NODE_ENV !== "production",
   },
+  // Dev-only: Next.js refuses cross-origin requests to dev assets (HMR
+  // websocket, client JS chunks, fonts) by default — anyone loading the app
+  // through a tunnel (a different hostname than localhost) gets a page that
+  // never hydrates, so every button silently does nothing. Wildcarded so it
+  // survives ngrok issuing a new random subdomain on each restart. Never
+  // applies in production (no dev server there to guard).
+  allowedDevOrigins: process.env.NODE_ENV === "production" ? undefined : ["*.ngrok-free.dev", "*.ngrok-free.app"],
+  // Dev-only convenience: proxies relative /storage/* requests to local
+  // Supabase Storage through this same origin. This lets the app (and any
+  // tunnel exposing it, e.g. ngrok) serve locally-uploaded images without
+  // the viewer's browser needing to reach 127.0.0.1 directly — that address
+  // means "their own machine", not this one. Production always talks to the
+  // real Supabase project directly via absolute URLs, so this never applies
+  // there. See lib/supabase/client.ts's upload helpers for the matching
+  // dev-only relative-URL behavior.
+  async rewrites() {
+    if (process.env.NODE_ENV === "production") return [];
+    return [{ source: "/storage/:path*", destination: "http://127.0.0.1:54321/storage/:path*" }];
+  },
   async headers() {
     return [
       {

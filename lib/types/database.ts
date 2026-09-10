@@ -184,6 +184,7 @@ export interface NavigationItemRow extends Timestamped {
   url: string;
   location: NavLocation;
   parent_id: string | null;
+  group_key: string | null;
   is_external: boolean;
   position: number;
   visible: boolean;
@@ -252,4 +253,36 @@ export interface TeamMemberRow extends Timestamped {
   linkedin_url: string | null;
   position: number;
   visible: boolean;
+}
+
+export interface BlogPostRow extends Timestamped {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string | null;
+  cover_image_url: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
+  published: boolean;
+  published_at: string;
+}
+
+export interface AlbumRow extends Timestamped {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  cover_image_url: string | null;
+  published: boolean;
+  published_at: string;
+}
+
+export interface AlbumImageRow {
+  id: string;
+  album_id: string;
+  image_url: string;
+  caption: string | null;
+  position: number;
+  created_at: string;
 }

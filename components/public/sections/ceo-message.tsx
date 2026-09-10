@@ -12,14 +12,15 @@ export function CeoMessage({ section }: { section: PageSectionRow }) {
           <div className="mx-auto flex max-w-70 flex-col items-center text-center lg:mx-0 lg:items-start lg:text-left">
             <div className="relative aspect-4/5 w-full overflow-hidden rounded-2xl bg-navy/5 shadow-sm">
               {section.image_url ? (
-                <Image src={section.image_url} alt={section.subtitle ?? "Chief Executive Officer"} fill className="object-cover" />
+                <Image src={section.image_url} alt={section.cta_label ?? section.subtitle ?? "Chief Executive Officer"} fill className="object-cover" />
               ) : (
                 <div className="flex h-full w-full items-center justify-center text-navy/20">
                   <User size={64} />
                 </div>
               )}
             </div>
-            {section.subtitle && <p className="mt-4 font-heading text-sm font-bold text-navy">{section.subtitle}</p>}
+            {section.cta_label && <p className="mt-4 font-heading text-base font-bold text-navy">{section.cta_label}</p>}
+            {section.subtitle && <p className="text-sm text-text-grey">{section.subtitle}</p>}
           </div>
         </Reveal>
 

@@ -16,8 +16,9 @@ export async function Footer() {
     getCompanyContacts(),
   ]);
 
-  const mainLinks = items.filter((i) => !legalSlugs.has(i.url));
+  const mainLinks = items.filter((i) => !legalSlugs.has(i.url) && i.group_key !== "other");
   const legalLinks = items.filter((i) => legalSlugs.has(i.url));
+  const otherLinks = items.filter((i) => i.group_key === "other");
   const phone = pickContact(contacts, "phone");
   const email = pickContact(contacts, "general_email");
   const infoEmail = pickContact(contacts, "info_email");
@@ -27,7 +28,7 @@ export async function Footer() {
 
   return (
     <footer className="bg-dark-bg text-white/80">
-      <Container className="grid gap-12 py-16 lg:grid-cols-[1.3fr_1fr_1.3fr]">
+      <Container className="grid gap-12 py-16 lg:grid-cols-[1.2fr_0.85fr_0.85fr_1.1fr]">
         <div>
           {settings?.dark_logo_url ? (
             <Image src={settings.dark_logo_url} alt={settings.site_name} width={160} height={40} className="h-10 w-auto" />
@@ -71,6 +72,26 @@ export async function Footer() {
             ))}
           </ul>
         </div>
+
+        {otherLinks.length > 0 && (
+          <div>
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-white/40">Other Links</h3>
+            <ul className="space-y-3">
+              {otherLinks.map((item) => (
+                <li key={item.id}>
+                  <a
+                    href={item.url}
+                    target={item.is_external ? "_blank" : undefined}
+                    rel={item.is_external ? "noopener noreferrer" : undefined}
+                    className="text-sm text-white/70 hover:text-orange"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div>
           <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-white/40">Contact</h3>

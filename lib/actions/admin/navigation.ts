@@ -10,6 +10,7 @@ export interface NavItemInput {
   label: string;
   url: string;
   location: NavLocation;
+  group_key: string | null;
   is_external: boolean;
   visible: boolean;
 }

@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { Upload, Loader2, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { recordMediaUpload } from "@/lib/actions/admin/media";
+import { toPortableUrl } from "@/lib/public-url";
 import { labelClass } from "@/components/admin/ui";
 
 export function ImageUploadField({
@@ -35,18 +36,19 @@ export function ImageUploadField({
     }
 
     const { data } = supabase.storage.from("public-media").getPublicUrl(path);
+    const publicUrl = toPortableUrl(data.publicUrl);
     await recordMediaUpload({
       filename: file.name,
       storage_path: path,
       bucket: "public-media",
-      public_url: data.publicUrl,
+      public_url: publicUrl,
       mime_type: file.type,
       size_bytes: file.size,
       alt_text: "",
       is_public: true,
     });
 
-    onChange(data.publicUrl);
+    onChange(publicUrl);
     setUploading(false);
     if (inputRef.current) inputRef.current.value = "";
   };

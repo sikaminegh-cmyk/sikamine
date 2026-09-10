@@ -19,6 +19,7 @@ import {
   Info,
   Landmark,
   Users,
+  Newspaper,
 } from "lucide-react";
 
 export interface NavItem {
@@ -41,6 +42,7 @@ export const adminNav: NavItem[] = [
   { label: "Partnership Enquiries", href: "/admin/partnership-enquiries", icon: Handshake, roles: ["super_admin", "administrator", "editor"] },
   { label: "Media Library", href: "/admin/media", icon: ImageIcon, roles: ["super_admin", "administrator", "editor"] },
   { label: "Partner & Regulator Logos", href: "/admin/partner-logos", icon: Landmark, roles: ["super_admin", "administrator", "editor"] },
+  { label: "Blog & Albums", href: "/admin/blog", icon: Newspaper, roles: ["super_admin", "administrator", "editor"] },
   { label: "Legal Documents", href: "/admin/legal", icon: ScrollText, roles: ["super_admin", "administrator", "editor"] },
   { label: "SEO", href: "/admin/seo", icon: Search, roles: ["super_admin", "administrator"] },
   { label: "Navigation", href: "/admin/navigation", icon: MenuIcon, roles: ["super_admin", "administrator"] },

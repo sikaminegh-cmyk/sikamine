@@ -179,17 +179,24 @@ export function PageSectionsEditor({ page, initialSections }: { page: PageRow; i
                 )}
               </Field>
               <Field label="Title">{(id) => <input id={id} className={inputClass} value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} />}</Field>
-              <Field label="Subtitle">{(id) => <textarea id={id} rows={2} className={inputClass} value={form.subtitle} onChange={(e) => setForm((f) => ({ ...f, subtitle: e.target.value }))} />}</Field>
+              {form.type === "ceo_message" && (
+                <Field label="Name (shown under the photo)">{(id) => <input id={id} className={inputClass} placeholder="e.g. Kwame Asante" value={form.cta_label} onChange={(e) => setForm((f) => ({ ...f, cta_label: e.target.value }))} />}</Field>
+              )}
+              <Field label={form.type === "ceo_message" ? "Role / Title (shown under the name)" : "Subtitle"}>{(id) => <textarea id={id} rows={2} className={inputClass} value={form.subtitle} onChange={(e) => setForm((f) => ({ ...f, subtitle: e.target.value }))} />}</Field>
               <Field label="Body">{() => <RichTextEditor value={form.body} onChange={(html) => setForm((f) => ({ ...f, body: html }))} />}</Field>
               <ImageUploadField label="Image" value={form.image_url} onChange={(url) => setForm((f) => ({ ...f, image_url: url }))} />
-              <div className="grid grid-cols-2 gap-3">
-                <Field label="CTA Label">{(id) => <input id={id} className={inputClass} value={form.cta_label} onChange={(e) => setForm((f) => ({ ...f, cta_label: e.target.value }))} />}</Field>
-                <Field label="CTA URL">{(id) => <input id={id} className={inputClass} value={form.cta_url} onChange={(e) => setForm((f) => ({ ...f, cta_url: e.target.value }))} />}</Field>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <Field label="Secondary CTA Label">{(id) => <input id={id} className={inputClass} value={form.secondary_cta_label} onChange={(e) => setForm((f) => ({ ...f, secondary_cta_label: e.target.value }))} />}</Field>
-                <Field label="Secondary CTA URL">{(id) => <input id={id} className={inputClass} value={form.secondary_cta_url} onChange={(e) => setForm((f) => ({ ...f, secondary_cta_url: e.target.value }))} />}</Field>
-              </div>
+              {form.type !== "ceo_message" && (
+                <>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Field label="CTA Label">{(id) => <input id={id} className={inputClass} value={form.cta_label} onChange={(e) => setForm((f) => ({ ...f, cta_label: e.target.value }))} />}</Field>
+                    <Field label="CTA URL">{(id) => <input id={id} className={inputClass} value={form.cta_url} onChange={(e) => setForm((f) => ({ ...f, cta_url: e.target.value }))} />}</Field>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Field label="Secondary CTA Label">{(id) => <input id={id} className={inputClass} value={form.secondary_cta_label} onChange={(e) => setForm((f) => ({ ...f, secondary_cta_label: e.target.value }))} />}</Field>
+                    <Field label="Secondary CTA URL">{(id) => <input id={id} className={inputClass} value={form.secondary_cta_url} onChange={(e) => setForm((f) => ({ ...f, secondary_cta_url: e.target.value }))} />}</Field>
+                  </div>
+                </>
+              )}
               <Field label="Background Style">
                 {(id) => (
                   <select id={id} className={inputClass} value={form.background_style} onChange={(e) => setForm((f) => ({ ...f, background_style: e.target.value }))}>
