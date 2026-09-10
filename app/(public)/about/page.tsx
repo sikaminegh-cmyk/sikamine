@@ -13,7 +13,7 @@ export async function generateMetadata() {
 
 export default async function AboutPage() {
   const result = await getPageWithSections("about");
-  if (!result) notFound();
+  if ("debug" in result) return <pre style={{ padding: 40 }}>{result.debug}</pre>;
 
   return <SectionRenderer sections={result.sections} />;
 }
