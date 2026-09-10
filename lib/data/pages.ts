@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import type { PageRow, PageSectionRow } from "@/lib/types/database";
 
 export const getPageWithSections = cache(async (slug: string) => {
@@ -13,9 +14,13 @@ export const getPageWithSections = cache(async (slug: string) => {
 
   const typedPage = page as PageRow | null;
   if (!typedPage) {
-    console.error(
-      `[getPageWithSections] no page for slug="${slug}" pageError=${JSON.stringify(pageError)} url=${process.env.NEXT_PUBLIC_SUPABASE_URL}`
-    );
+    const message = `no page for slug="${slug}" pageError=${JSON.stringify(pageError)} url=${process.env.NEXT_PUBLIC_SUPABASE_URL}`;
+    console.error(`[getPageWithSections] ${message}`);
+    try {
+      await createAdminClient().from("_debug_log").insert({ message });
+    } catch {
+      // best-effort diagnostic only
+    }
     return null;
   }
 
