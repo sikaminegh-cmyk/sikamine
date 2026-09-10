@@ -21,6 +21,11 @@ export async function updateSession(request: NextRequest) {
           );
         },
       },
+      // See lib/supabase/server.ts — never let Next's fetch cache serve a
+      // stale auth/admin-status result here.
+      global: {
+        fetch: (url, options = {}) => fetch(url, { ...options, cache: "no-store" }),
+      },
     }
   );
 

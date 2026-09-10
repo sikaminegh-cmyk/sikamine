@@ -33,6 +33,13 @@ export async function createClient() {
           }
         },
       },
+      // Next.js patches global fetch to cache requests by default. This is
+      // admin-editable CMS content queried straight from Postgres — it must
+      // never be served from Next's Data Cache (an admin edit should show
+      // up on the next request, not whenever that cache entry expires).
+      global: {
+        fetch: (url, options = {}) => fetch(url, { ...options, cache: "no-store" }),
+      },
     }
   );
 }
