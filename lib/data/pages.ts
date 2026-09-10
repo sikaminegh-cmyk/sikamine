@@ -4,7 +4,7 @@ import type { PageRow, PageSectionRow } from "@/lib/types/database";
 
 export const getPageWithSections = cache(async (slug: string) => {
   const supabase = await createClient();
-  const { data: page } = await supabase
+  const { data: page, error: pageError } = await supabase
     .from("pages")
     .select("*")
     .eq("slug", slug)
@@ -12,14 +12,21 @@ export const getPageWithSections = cache(async (slug: string) => {
     .maybeSingle();
 
   const typedPage = page as PageRow | null;
-  if (!typedPage) return null;
+  if (!typedPage) {
+    console.error(`[getPageWithSections] no page for slug="${slug}"`, { pageError });
+    return null;
+  }
 
-  const { data: sections } = await supabase
+  const { data: sections, error: sectionsError } = await supabase
     .from("page_sections")
     .select("*")
     .eq("page_id", typedPage.id)
     .eq("visible", true)
     .order("position", { ascending: true });
+
+  if (sectionsError) {
+    console.error(`[getPageWithSections] sections error for slug="${slug}"`, { sectionsError });
+  }
 
   return { page: typedPage, sections: (sections ?? []) as PageSectionRow[] };
 });
