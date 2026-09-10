@@ -9,11 +9,12 @@ export async function proxy(request: NextRequest) {
     await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/_debug_log`, {
       method: "POST",
       headers: {
-        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
         "Content-Type": "application/json",
+        Prefer: "return=minimal",
       },
-      body: JSON.stringify({ message: `proxy hit path=${request.nextUrl.pathname}` }),
+      body: JSON.stringify({ message: `proxy hit path=${request.nextUrl.pathname} (anon key test)` }),
     });
   } catch {
     // best-effort diagnostic only
