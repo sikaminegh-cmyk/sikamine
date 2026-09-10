@@ -4,7 +4,7 @@ import type { PageRow, PageSectionRow } from "@/lib/types/database";
 
 export const getPageWithSections = cache(async (slug: string) => {
   const supabase = await createClient();
-  const { data: page, error: pageError, status, statusText } = await supabase
+  const { data: page } = await supabase
     .from("pages")
     .select("*")
     .eq("slug", slug)
@@ -12,10 +12,7 @@ export const getPageWithSections = cache(async (slug: string) => {
     .maybeSingle();
 
   const typedPage = page as PageRow | null;
-  if (!typedPage) {
-    const debug = `slug="${slug}" status=${status} statusText="${statusText}" pageError=${JSON.stringify(pageError)} url=${process.env.NEXT_PUBLIC_SUPABASE_URL} hasAnon=${!!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY} nodeEnv=${process.env.NODE_ENV} vercelEnv=${process.env.VERCEL_ENV}`;
-    return { debug };
-  }
+  if (!typedPage) return null;
 
   const { data: sections } = await supabase
     .from("page_sections")

@@ -13,7 +13,7 @@ export async function generateMetadata() {
 
 export default async function ResponsibleSourcingPage() {
   const result = await getPageWithSections("responsible-sourcing");
-  if ("debug" in result) return <pre style={{ padding: 40 }}>{result.debug}</pre>;
+  if (!result) notFound();
 
   return <SectionRenderer sections={result.sections} />;
 }
